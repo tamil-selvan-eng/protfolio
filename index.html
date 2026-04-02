@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAMIL SELVAN M - Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-blue': '#00f2ff',
+                        'neon-purple': '#bc13fe',
+                        'dark-bg': '#050505',
+                        'glass': 'rgba(255, 255, 255, 0.05)',
+                        'glass-border': 'rgba(255, 255, 255, 0.1)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: #050505;
+            color: white;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-text-blue {
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5), 0 0 20px rgba(0, 242, 255, 0.3);
+        }
+        .neon-text-purple {
+            text-shadow: 0 0 10px rgba(188, 19, 254, 0.5), 0 0 20px rgba(188, 19, 254, 0.3);
+        }
+        .neon-border-blue {
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+        }
+        .neon-border-purple {
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(188, 19, 254, 0.5);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bc13fe;
+        }
+        .bg-gradient-animate {
+            background: radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(0, 242, 255, 0.1) 0%, transparent 50%);
+            animation: pulse-bg 10s infinite alternate;
+        }
+        @keyframes pulse-bg {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 0.8; }
+        }
+        .typing-cursor {
+            color: #00f2ff;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        #custom-cursor {
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 242, 255, 0.3);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            display: none;
+        }
+        @media (min-width: 768px) {
+            #custom-cursor { display: block; }
+        }
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(to right, #00f2ff, #bc13fe);
+            z-index: 100;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+        .modal-enter {
+            animation: modal-in 0.3s ease-out forwards;
+        }
+        @keyframes modal-in {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-white selection:bg-neon-purple selection:text-white">
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 z-[100] bg-dark-bg flex items-center justify-center transition-opacity duration-1000">
+        <div class="relative">
+            <div class="w-24 h-24 border-t-2 border-neon-blue rounded-full animate-spin"></div>
+            <div class="absolute inset-2 border-b-2 border-neon-purple rounded-full animate-[spin_1.5s_linear_infinite_reverse]"></div>
+            <div class="absolute inset-0 flex items-center justify-center font-mono text-[10px] text-neon-blue animate-pulse">INIT...</div>
+        </div>
+    </div>
+
+    <!-- Scroll Progress -->
+    <div id="scroll-progress"></div>
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor">
+        <div class="absolute inset-0 rounded-full blur-xl bg-inherit"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent py-6">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div class="text-2xl font-bold bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
+                TAMIL SELVAN M
+            </div>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#about" class="text-sm font-medium hover:text-neon-blue transition-colors">About</a>
+                <a href="#skills" class="text-sm font-medium hover:text-neon-blue transition-colors">Skills</a>
+                <a href="#projects" class="text-sm font-medium hover:text-neon-blue transition-colors">Projects</a>
+                <a href="#experience" class="text-sm font-medium hover:text-neon-blue transition-colors">Experience</a>
+                <a href="#contact" class="text-sm font-medium hover:text-neon-blue transition-colors">Contact</a>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <button class="md:hidden text-white" id="menu-toggle">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden md:hidden glass overflow-hidden">
+            <div class="flex flex-col p-6 space-y-4">
+                <a href="#about" class="mobile-link text-lg hover:text-neon-blue transition-colors">About</a>
+                <a href="#skills" class="mobile-link text-lg hover:text-neon-blue transition-colors">Skills</a>
+                <a href="#projects" class="mobile-link text-lg hover:text-neon-blue transition-colors">Projects</a>
+                <a href="#experience" class="mobile-link text-lg hover:text-neon-blue transition-colors">Experience</a>
+                <a href="#contact" class="mobile-link text-lg hover:text-neon-blue transition-colors">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-animate opacity-30 pointer-events-none"></div>
+            
+            <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center z-10">
+                <div data-aos="fade-right" data-aos-duration="800">
+                    <h2 class="text-neon-blue font-mono mb-4 tracking-widest uppercase text-sm">Welcome to my universe</h2>
+                    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                        Hi, I'm <br />
+                        <span class="text-neon-purple neon-text-purple">TAMIL SELVAN M</span>
+                    </h1>
+                    
+                    <div class="text-xl md:text-2xl text-gray-400 mb-8 h-12">
+                        <span id="typewriter" class="text-neon-blue font-mono"></span><span class="typing-cursor">|</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#projects" class="px-8 py-3 bg-neon-blue text-black font-bold rounded-full neon-border-blue hover:bg-white transition-all transform hover:scale-105">
+                            View Projects
+                        </a>
+                        <a href="#contact" class="px-8 py-3 border border-neon-purple text-neon-purple font-bold rounded-full hover:bg-neon-purple/10 transition-all transform hover:scale-105">
+                            Contact Me
+                        </a>
+                    </div>
+                </div>
+
+                <div data-aos="zoom-in" data-aos-delay="200" class="relative flex justify-center">
+                    <div class="relative w-64 h-64 md:w-80 md:h-80">
+                        <div class="absolute inset-0 rounded-full border-2 border-neon-blue animate-pulse neon-border-blue"></div>
+                        <div class="absolute inset-4 rounded-full border-2 border-neon-purple animate-ping opacity-20"></div>
+                        <img 
+                            src="https://picsum.photos/seed/engineer/400/400" 
+                            alt="Profile" 
+                            class="w-full h-full object-cover rounded-full border-4 border-dark-bg p-2 grayscale hover:grayscale-0 transition-all duration-500"
+                            referrerpolicy="no-referrer"
+                        />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-24 bg-black/50">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-16 items-center" data-aos="fade-up">
+                    <div>
+                        <h2 class="text-4xl font-bold mb-8 flex items-center">
+                            <span class="text-neon-blue mr-4">01.</span> About Me
+                        </h2>
+                        <div class="space-y-6 text-gray-400 text-lg leading-relaxed">
+                            <p>
+                                I am an <span class="text-white font-semibold">Electronics and Communication Engineering</span> student with a deep fascination for how the world connects through technology. My journey is fueled by a passion for <span class="text-neon-blue">Aviation</span>, <span class="text-neon-purple">Embedded Systems</span>, and <span class="text-white">AI</span>.
+                            </p>
+                            <p>
+                                As an <span class="text-white font-semibold">NCC Cadet</span>, I bring discipline, leadership, and a problem-solving mindset to every project I undertake. Whether it's designing a ramjet engine or coding an IoT health monitor, I strive for precision and innovation.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 pt-4">
+                                <div class="flex items-center space-x-3">
+                                    <i data-lucide="plane" class="text-neon-blue w-5 h-5"></i>
+                                    <span>Aviation Tech</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i data-lucide="cpu" class="text-neon-purple w-5 h-5"></i>
+                                    <span>Electronics</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i data-lucide="code" class="text-neon-blue w-5 h-5"></i>
+                                    <span>Software</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i data-lucide="zap" class="text-neon-purple w-5 h-5"></i>
+                                    <span>AI & ML</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="glass p-6 rounded-2xl">
+                            <h4 class="text-sm font-mono mb-2">Discipline</h4>
+                            <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-neon-blue" style="width: 95%"></div>
+                            </div>
+                            <span class="text-xs mt-2 block text-right opacity-50">95%</span>
+                        </div>
+                        <div class="glass p-6 rounded-2xl">
+                            <h4 class="text-sm font-mono mb-2">Leadership</h4>
+                            <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-neon-purple" style="width: 90%"></div>
+                            </div>
+                            <span class="text-xs mt-2 block text-right opacity-50">90%</span>
+                        </div>
+                        <div class="glass p-6 rounded-2xl">
+                            <h4 class="text-sm font-mono mb-2">Innovation</h4>
+                            <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-neon-blue" style="width: 85%"></div>
+                            </div>
+                            <span class="text-xs mt-2 block text-right opacity-50">85%</span>
+                        </div>
+                        <div class="glass p-6 rounded-2xl">
+                            <h4 class="text-sm font-mono mb-2">Teamwork</h4>
+                            <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-neon-purple" style="width: 92%"></div>
+                            </div>
+                            <span class="text-xs mt-2 block text-right opacity-50">92%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold mb-4">Technical Arsenal</h2>
+                    <div class="h-1 w-20 bg-neon-blue mx-auto rounded-full"></div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Programming -->
+                    <div class="glass p-8 rounded-3xl hover:border-neon-blue/50 transition-all group" data-aos="fade-up" data-aos-delay="0">
+                        <div class="mb-6 p-3 bg-white/5 w-fit rounded-xl group-hover:neon-border-blue transition-all">
+                            <i data-lucide="terminal" class="w-6 h-6 text-neon-blue"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-6">Programming</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-all cursor-default">C</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-all cursor-default">Python</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-all cursor-default">Embedded C</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-all cursor-default">MATLAB</span>
+                        </div>
+                    </div>
+                    <!-- Tools -->
+                    <div class="glass p-8 rounded-3xl hover:border-neon-purple/50 transition-all group" data-aos="fade-up" data-aos-delay="200">
+                        <div class="mb-6 p-3 bg-white/5 w-fit rounded-xl group-hover:neon-border-purple transition-all">
+                            <i data-lucide="layers" class="w-6 h-6 text-neon-purple"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-6">Tools & Hardware</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-purple/20 hover:text-neon-purple transition-all cursor-default">Arduino</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-purple/20 hover:text-neon-purple transition-all cursor-default">FPGA</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-purple/20 hover:text-neon-purple transition-all cursor-default">Fusion 360</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-purple/20 hover:text-neon-purple transition-all cursor-default">Proteus</span>
+                        </div>
+                    </div>
+                    <!-- Core ECE -->
+                    <div class="glass p-8 rounded-3xl hover:border-neon-blue/50 transition-all group" data-aos="fade-up" data-aos-delay="400">
+                        <div class="mb-6 p-3 bg-white/5 w-fit rounded-xl group-hover:neon-border-blue transition-all">
+                            <i data-lucide="cpu" class="w-6 h-6 text-neon-blue"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-6">Core ECE</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-all cursor-default">VLSI Design</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-all cursor-default">Digital Electronics</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-all cursor-default">IoT</span>
+                            <span class="px-4 py-2 bg-white/5 rounded-lg text-sm hover:bg-neon-blue/20 hover:text-neon-blue transition-all cursor-default">Microcontrollers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-24 bg-black/30">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex justify-between items-end mb-16">
+                    <div>
+                        <h2 class="text-4xl font-bold mb-4">Featured Projects</h2>
+                        <p class="text-gray-400">A glimpse into my engineering endeavors</p>
+                    </div>
+                    <button class="text-neon-blue flex items-center space-x-2 font-mono text-sm hover:translate-x-1 transition-transform">
+                        <span>View All</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8" id="projects-grid">
+                    <!-- Project cards will be injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-24">
+            <div class="max-w-4xl mx-auto px-6">
+                <h2 class="text-4xl font-bold mb-16 text-center">My Journey</h2>
+                
+                <div class="relative space-y-12">
+                    <div class="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-neon-blue via-neon-purple to-transparent opacity-30"></div>
+                    
+                    <div class="relative pl-20" data-aos="fade-left">
+                        <div class="absolute left-0 top-0 w-16 h-16 glass rounded-2xl flex items-center justify-center text-neon-blue neon-border-blue z-10">
+                            <i data-lucide="plane" class="w-6 h-6"></i>
+                        </div>
+                        <div class="glass p-8 rounded-3xl">
+                            <span class="text-xs font-mono text-neon-purple mb-1 block">Jun 2025 - Aug 2025</span>
+                            <h3 class="text-xl font-bold mb-1">Aircraft Propulsion Internship</h3>
+                            <h4 class="text-sm text-gray-400 mb-4">Aviation Research Center</h4>
+                            <p class="text-gray-400 leading-relaxed">Explored advanced propulsion systems and gas turbine cycles. Worked on performance analysis of jet engines.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative pl-20" data-aos="fade-left" data-aos-delay="200">
+                        <div class="absolute left-0 top-0 w-16 h-16 glass rounded-2xl flex items-center justify-center text-neon-blue neon-border-blue z-10">
+                            <i data-lucide="award" class="w-6 h-6"></i>
+                        </div>
+                        <div class="glass p-8 rounded-3xl">
+                            <span class="text-xs font-mono text-neon-purple mb-1 block">2023 - Present</span>
+                            <h3 class="text-xl font-bold mb-1">NCC Cadet (Air Wing)</h3>
+                            <h4 class="text-sm text-gray-400 mb-4">National Cadet Corps</h4>
+                            <p class="text-gray-400 leading-relaxed">Developing leadership, discipline, and aviation knowledge through rigorous training and camps.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative pl-20" data-aos="fade-left" data-aos-delay="400">
+                        <div class="absolute left-0 top-0 w-16 h-16 glass rounded-2xl flex items-center justify-center text-neon-blue neon-border-blue z-10">
+                            <i data-lucide="briefcase" class="w-6 h-6"></i>
+                        </div>
+                        <div class="glass p-8 rounded-3xl">
+                            <span class="text-xs font-mono text-neon-purple mb-1 block">2022 - 2026</span>
+                            <h3 class="text-xl font-bold mb-1">ECE Student</h3>
+                            <h4 class="text-sm text-gray-400 mb-4">Engineering College</h4>
+                            <p class="text-gray-400 leading-relaxed">Focusing on embedded systems, VLSI, and communication protocols. Maintaining a high academic standing.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 bg-black/50">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-16">
+                    <div data-aos="fade-right">
+                        <h2 class="text-4xl font-bold mb-8">Get In Touch</h2>
+                        <p class="text-gray-400 text-lg mb-12">
+                            Have a project in mind or just want to talk about aviation and electronics? Feel free to reach out!
+                        </p>
+                        
+                        <div class="space-y-8">
+                            <a href="mailto:tamilaviate@gmail.com" class="flex items-center space-x-6 group">
+                                <div class="w-14 h-14 glass rounded-2xl flex items-center justify-center group-hover:neon-border-blue transition-all">
+                                    <i data-lucide="mail" class="text-neon-blue w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-mono text-gray-500 uppercase">Email</h4>
+                                    <p class="text-lg font-bold">tamilaviate@gmail.com</p>
+                                </div>
+                            </a>
+                            
+                            <a href="https://wa.me/message/JWI53JFQM4BJH1" target="_blank" rel="noreferrer" class="flex items-center space-x-6 group">
+                                <div class="w-14 h-14 glass rounded-2xl flex items-center justify-center group-hover:neon-border-purple transition-all">
+                                    <i data-lucide="message-circle" class="text-neon-purple w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-mono text-gray-500 uppercase">WhatsApp</h4>
+                                    <p class="text-lg font-bold">+91 6383503875</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <form id="contact-form" class="glass p-10 rounded-3xl space-y-6" data-aos="fade-left">
+                        <div>
+                            <label class="block text-sm font-mono mb-2 opacity-50">Name</label>
+                            <input type="text" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-neon-blue transition-all" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-mono mb-2 opacity-50">Email</label>
+                            <input type="email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-neon-blue transition-all" placeholder="john@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-mono mb-2 opacity-50">Message</label>
+                            <textarea rows="4" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-neon-blue transition-all resize-none" placeholder="Your message here..."></textarea>
+                        </div>
+                        <button type="submit" id="submit-btn" class="w-full py-4 bg-gradient-to-r from-neon-blue to-neon-purple text-black font-bold rounded-xl hover:opacity-90 transition-all flex items-center justify-center space-x-2">
+                            <span>Send Message</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="text-xl font-bold bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
+                TAMIL SELVAN M
+            </div>
+            
+            <div class="flex space-x-6">
+                <a href="https://www.instagram.com/myself.albatross?igsh=MTVlYzg0bmpua3g2bA==" target="_blank" rel="noopener noreferrer" class="p-3 glass rounded-xl hover:text-neon-purple hover:neon-border-purple transition-all duration-300 transform hover:scale-110">
+                    <i data-lucide="instagram" class="w-5 h-5"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/tamil-selvan-m-742b0b2a1" target="_blank" rel="noopener noreferrer" class="p-3 glass rounded-xl hover:text-neon-blue hover:neon-border-blue transition-all duration-300 transform hover:scale-110">
+                    <i data-lucide="linkedin" class="w-5 h-5"></i>
+                </a>
+                <a href="https://github.com/tamil-selvan-eng" target="_blank" rel="noopener noreferrer" class="p-3 glass rounded-xl hover:text-neon-purple hover:neon-border-purple transition-all duration-300 transform hover:scale-110">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                </a>
+                <a href="https://wa.me/message/JWI53JFQM4BJH1" target="_blank" rel="noopener noreferrer" class="p-3 glass rounded-xl hover:text-neon-blue hover:neon-border-blue transition-all duration-300 transform hover:scale-110">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                </a>
+            </div>
+            
+            <p class="text-gray-500 text-sm">
+                &copy; <span id="year"></span> TAMIL SELVAN M. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 md:p-6">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" id="modal-backdrop"></div>
+        <div class="relative w-full max-w-2xl glass rounded-3xl overflow-hidden neon-border-blue modal-enter">
+            <button id="close-modal" class="absolute top-6 right-6 p-2 glass rounded-xl hover:text-neon-blue transition-all z-10">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <div class="p-8 md:p-12 overflow-y-auto max-h-[90vh]" id="modal-content">
+                <!-- Modal content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Initialize AOS
+        AOS.init({
+            once: true,
+            duration: 800
+        });
+
+        // Current Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 1000);
+            }, 1500);
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('glass', 'py-4');
+                nav.classList.remove('bg-transparent', 'py-6');
+            } else {
+                nav.classList.remove('glass', 'py-4');
+                nav.classList.add('bg-transparent', 'py-6');
+            }
+
+            // Scroll Progress
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+        });
+
+        // Mobile Menu
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // Typewriter Effect
+        const words = ['Aspiring Engineer', 'NCC Cadet', 'Tech Enthusiast', 'Aviation Lover'];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typewriterElement = document.getElementById('typewriter');
+
+        function type() {
+            const currentWord = words[wordIndex];
+            if (isDeleting) {
+                typewriterElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typewriterElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 150;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+        type();
+
+        // Custom Cursor
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 16 + 'px';
+            cursor.style.top = e.clientY - 16 + 'px';
+            
+            const target = e.target;
+            const isPointer = window.getComputedStyle(target).cursor === 'pointer';
+            if (isPointer) {
+                cursor.style.transform = 'scale(2.5)';
+                cursor.style.backgroundColor = 'rgba(188, 19, 254, 0.3)';
+            } else {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.backgroundColor = 'rgba(0, 242, 255, 0.3)';
+            }
+        });
+
+        // Projects Data
+        const projects = [
+            {
+                title: "Soldier Health Monitoring",
+                category: "IoT / Embedded",
+                desc: "Real-time health tracking system for soldiers using IoT sensors to monitor heart rate, temperature, and location.",
+                fullDesc: "This project aims to enhance the safety and effectiveness of soldiers in the field by providing real-time health data to command centers. Using a network of IoT sensors integrated into the soldier's gear, the system continuously monitors vital signs and environmental conditions.",
+                features: [
+                    "Real-time heart rate and body temperature monitoring",
+                    "GPS tracking for precise location data",
+                    "Emergency SOS trigger for immediate assistance",
+                    "Low-power wireless communication (LoRa/Zigbee)",
+                    "Cloud-based dashboard for remote monitoring"
+                ],
+                tags: ["Arduino", "IoT", "Sensors", "Embedded C"]
+            },
+            {
+                title: "Ramjet Engine Design",
+                category: "Aerospace / CAD",
+                desc: "High-fidelity 3D modeling and simulation of a Ramjet engine designed for supersonic propulsion systems.",
+                fullDesc: "A comprehensive design study of a ramjet engine, focusing on aerodynamic efficiency and structural integrity at supersonic speeds. The project involved complex CAD modeling and computational fluid dynamics (CFD) analysis to optimize the intake and combustion chamber geometry.",
+                features: [
+                    "Optimized intake geometry for shockwave management",
+                    "Detailed combustion chamber design for efficient fuel mixing",
+                    "Structural analysis under high thermal and pressure loads",
+                    "CFD simulations using Ansys/OpenFOAM",
+                    "High-fidelity 3D rendering in Fusion 360"
+                ],
+                tags: ["Fusion 360", "Propulsion", "CAD", "Aerodynamics"]
+            },
+            {
+                title: "FPGA Traffic Controller",
+                category: "VLSI / Digital",
+                desc: "An intelligent traffic light control system implemented on FPGA using Verilog for optimized timing and logic.",
+                fullDesc: "This project implements a sophisticated traffic management system on an FPGA platform. It uses hardware-level concurrency to manage multiple intersections simultaneously, incorporating sensor inputs to adaptively adjust timing based on real-time traffic density.",
+                features: [
+                    "Adaptive timing logic based on vehicle sensors",
+                    "Emergency vehicle priority override system",
+                    "Pedestrian crossing integration",
+                    "Low-latency hardware implementation in Verilog",
+                    "Real-time status monitoring via 7-segment display"
+                ],
+                tags: ["Verilog", "FPGA", "Digital Logic", "VLSI"]
+            }
+        ];
+
+        // Render Projects
+        const projectsGrid = document.getElementById('projects-grid');
+        projects.forEach((project, index) => {
+            const card = document.createElement('div');
+            card.className = 'group relative glass rounded-3xl overflow-hidden cursor-pointer hover:neon-border-blue transition-all duration-300';
+            card.setAttribute('data-aos', 'fade-up');
+            card.setAttribute('data-aos-delay', index * 100);
+            card.innerHTML = `
+                <div class="p-8">
+                    <span class="text-xs font-mono text-neon-purple mb-2 block uppercase tracking-widest">${project.category}</span>
+                    <h3 class="text-xl font-bold mb-4 group-hover:text-neon-blue transition-colors">${project.title}</h3>
+                    <p class="text-gray-400 text-sm mb-6 line-clamp-3">${project.desc}</p>
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        ${project.tags.map(tag => `<span class="text-[10px] uppercase tracking-wider px-2 py-1 bg-white/5 rounded border border-white/10">${tag}</span>`).join('')}
+                    </div>
+                    <div class="w-full py-3 border border-white/10 rounded-xl group-hover:bg-white group-hover:text-black font-bold transition-all flex items-center justify-center space-x-2">
+                        <span>View Details</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </div>
+                </div>
+            `;
+            card.addEventListener('click', () => openModal(project));
+            projectsGrid.appendChild(card);
+        });
+        lucide.createIcons(); // Re-init icons for dynamic content
+
+        // Modal Logic
+        const modal = document.getElementById('project-modal');
+        const modalContent = document.getElementById('modal-content');
+        const closeModal = document.getElementById('close-modal');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+
+        function openModal(project) {
+            modalContent.innerHTML = `
+                <span class="text-xs font-mono text-neon-purple mb-2 block uppercase tracking-widest">${project.category}</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-neon-blue">${project.title}</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h4 class="text-sm font-mono text-gray-500 uppercase mb-3">Description</h4>
+                        <p class="text-gray-300 leading-relaxed text-lg">${project.fullDesc}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm font-mono text-gray-500 uppercase mb-3">Key Features</h4>
+                        <ul class="grid md:grid-cols-2 gap-3">
+                            ${project.features.map(feature => `
+                                <li class="flex items-start space-x-3 text-gray-400 text-sm">
+                                    <i data-lucide="zap" class="w-4 h-4 text-neon-purple shrink-0 mt-0.5"></i>
+                                    <span>${feature}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm font-mono text-gray-500 uppercase mb-3">Technologies</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${project.tags.map(tag => `
+                                <span class="px-3 py-1 bg-neon-blue/10 text-neon-blue rounded-lg text-xs font-mono border border-neon-blue/20">${tag}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closeProjectModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        closeModal.addEventListener('click', closeProjectModal);
+        modalBackdrop.addEventListener('click', closeProjectModal);
+
+        // Contact Form
+        const contactForm = document.getElementById('contact-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <div class="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+            `;
+
+            setTimeout(() => {
+                submitBtn.innerHTML = '<span>Message Sent!</span>';
+                contactForm.reset();
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Send Message</span>';
+                }, 3000);
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
